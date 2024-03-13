@@ -12,7 +12,7 @@ Example:
 main = withGPIO do
   preparePWMChannel 0
   enablePinPWM 0 Pin12
-  rotateTo 180 Pin12
+  rotateServo 0 180
 @
 
 

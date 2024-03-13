@@ -32,7 +32,8 @@ executable simple-robots
     -- other-extensions:
     build-depends:
         base,
-        simple-robots
+        simple-robots,
+        HPi
 
     hs-source-dirs:   app
     default-language: Haskell2010
