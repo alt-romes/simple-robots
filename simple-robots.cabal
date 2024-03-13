@@ -1,4 +1,4 @@
-cabal-version:      3.4
+cabal-version:      2.0
 name:               simple-robots
 version:            0.1.0.0
 -- synopsis:
@@ -18,10 +18,10 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  MyLib
+    exposed-modules:  Control.Servo.PWM
     -- other-modules:
     -- other-extensions:
-    build-depends:    base ^>=4.18.2.0
+    build-depends:    base, HPi >= 0.10
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -31,7 +31,7 @@ executable simple-robots
     -- other-modules:
     -- other-extensions:
     build-depends:
-        base ^>=4.18.2.0,
+        base,
         simple-robots
 
     hs-source-dirs:   app
