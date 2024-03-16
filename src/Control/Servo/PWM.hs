@@ -27,15 +27,16 @@ import System.RaspberryPi.GPIO
 -- With a divider of 16 and a RANGE of 24000, in MARKSPACE mode,
 -- the pulse repetition frequency will be
 -- 1.2MHz/24000 = 50Hz, suitable for driving the 9g micro servo motor with PWM
+-- WRONG! the rPI4 clock is actually 54MHz ...
 --
 --
 -- Now we need the data to set, in the 50Hz frame, 1ms to 2ms the output to HIGH
 --
 -- (we use 1.2MHz because that is (RPi PWM clock frequency/(CLOCK_DIVIDER=16)))
 
-#define RPI_PWM_CLOCK 19_200_000
+#define RPI_PWM_CLOCK 54_000_000
 #define DEF_CLOCK_DIVIDER 16
-#define DEF_RANGE 24000
+#define DEF_RANGE ((RPI_PWM_CLOCK / DEF_CLOCK_DIVIDER) / 50 {- Hz -})
 
 
 -- | A PWM channel, in the raspberry it can be either 0 or 1
@@ -47,7 +48,7 @@ preparePWMChannel :: PWMCh -> IO ()
 preparePWMChannel channel = do
   setClockPWM DEF_CLOCK_DIVIDER
   setModePWM channel 1 1
-  setRangePWM channel DEF_RANGE
+  setRangePWM channel (fromIntegral $ float2Int DEF_RANGE)
   setDataPWM channel 0
 
 -- | Set the given Pin's function to use the given hardware PWM channel.
@@ -69,6 +70,6 @@ rotateServo channel angle = do
     -- this should be 50Hz, suitable for driving 9g micro servo
     pulse_rep_freq = (RPI_PWM_CLOCK / DEF_CLOCK_DIVIDER) / DEF_RANGE
     -- this should be in the 1ms to 2ms range, i.e. 0.05*pulse_rep_freq to 0.1*pulse_rep_freq, which can be set with 0.05*DEF_RANGE to 0.1*DEF_RANGE
-    data_val = (angle / 180) * (0.05 * DEF_RANGE) + (0.05 * DEF_RANGE)
+    data_val = ((angle*0.1 / 180) + 0.02) * DEF_RANGE
   setDataPWM channel (fromIntegral $ float2Int data_val)
 
